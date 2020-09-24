@@ -1,17 +1,125 @@
 class MatrixShell:
-    def __init__(self, nr_row=0, nr_col=0):
+    def __init__(self, nr_row=0, nr_col=0, multiplication_instance=0):
         # initialization nothing new here
         self.nr_row = nr_row
         self.nr_col = nr_col
-        if self.nr_row * self.nr_col != 0:
-            self.matrix = self.populate()
+        if multiplication_instance == 1:
+            pass
         else:
-            # this shit is cool
-            code = compile('self.matrix = ' + input("enter matrix as you would with "
-                                                    "python lists; i.e. [[1,2],[1, 2]:"), 'file', 'exec')
-            exec(code)
-            self.nr_row = len(self.matrix)
-            self.nr_col = len(self.matrix[0])
+            if self.nr_row * self.nr_col != 0:
+                self.matrix = self.populate()
+            else:
+                # this shit is cool
+                code = compile('self.matrix = ' + input("enter matrix as you would with "
+                                                        "python lists; i.e. [[1,2],[1, 2]:"), 'file', 'exec')
+                exec(code)
+                self.nr_row = len(self.matrix)
+                self.nr_col = len(self.matrix[0])
+
+    def __add__(self, other):
+        if self.nr_row == other.nr_row and self.nr_col == other.nr_col:
+            dummy = MatrixShell(len(self.matrix), len(self.matrix[0]), 1)
+            dummy.matrix = [[0 for i in range(len(self.matrix[0]))] for j in range(len(self.matrix))]
+            for i in range(len(self.matrix)):
+                for j in range(len(self.matrix[0])):
+                    dummy.matrix[i][j] = self.matrix[i][j] + other.matrix[i][j]
+            return dummy
+        elif not isinstance(other, MatrixShell):
+            print('Cannot add a MatrixShell with another type that is not MatrixShell!')
+        else:
+            print('Cannot add matrices with different dimensions!')
+
+    def __radd__(self, other):
+        if self.nr_row == other.nr_row and self.nr_col == other.nr_col:
+            dummy = MatrixShell(len(self.matrix), len(self.matrix[0]), 1)
+            dummy.matrix = [[0 for i in range(len(self.matrix[0]))] for j in range(len(self.matrix))]
+            for i in range(len(self.matrix)):
+                for j in range(len(self.matrix[0])):
+                    dummy.matrix[i][j] = self.matrix[i][j] + other.matrix[i][j]
+            return dummy
+        elif not isinstance(other, MatrixShell):
+            print('Cannot add a MatrixShell with another type that is not MatrixShell!')
+        else:
+            print('Cannot add matrices with different dimensions!')
+
+    def __sub__(self, other):
+        if self.nr_row == other.nr_row and self.nr_col == other.nr_col:
+            dummy = MatrixShell(len(self.matrix), len(self.matrix[0]), 1)
+            dummy.matrix = [[0 for i in range(len(self.matrix[0]))] for j in range(len(self.matrix))]
+            for i in range(len(self.matrix)):
+                for j in range(len(self.matrix[0])):
+                    dummy.matrix[i][j] = self.matrix[i][j] - other.matrix[i][j]
+            return dummy
+        elif not isinstance(other, MatrixShell):
+            print('Cannot add a MatrixShell with another type that is not MatrixShell!')
+        else:
+            print('Cannot subtract matrices with different dimensions!')
+
+    def __rsub__(self, other):
+        if self.nr_row == other.nr_row and self.nr_col == other.nr_col:
+            dummy = MatrixShell(len(self.matrix), len(self.matrix[0]), 1)
+            dummy.matrix = [[0 for i in range(len(self.matrix[0]))] for j in range(len(self.matrix))]
+            for i in range(len(self.matrix)):
+                for j in range(len(self.matrix[0])):
+                    dummy.matrix[i][j] = other.matrix[i][j] - self.matrix[i][j]
+            return dummy
+        elif not isinstance(other, MatrixShell):
+            print('Cannot add a MatrixShell with another type that is not MatrixShell!')
+        else:
+            print('Cannot subtract matrices with different dimensions!')
+
+    def __mul__(self, other):
+        # scalar or matrix multiplication,
+        # usage: c = a * b where a and b are compatible matrices
+        if isinstance(other, float) or isinstance(other, int):
+            for i in range(self.nr_row):
+                for j in range(self.nr_col):
+                    self.matrix[i][j] *= other
+            return self
+        elif isinstance(self, MatrixShell) and isinstance(other, MatrixShell):
+            if other.nr_row != self.nr_col:
+                print('Incompatible')
+                return
+
+            else:
+                new = MatrixShell(self.nr_row, other.nr_col, 1)
+
+                def mul(c, d):
+                    # creates a list with ordered entries of a matrix
+                    # obtained from 2 other multiplied matrices
+                    # starting from left to right
+                    # a11,a12,a13...
+                    # a21,a22,a23...
+                    # ...
+                    final = []
+
+                    def m(x, y):
+                        # creates a list which if you sum its elements
+                        # you get elements of a matrix obtained from
+                        # multiplication of 2 other matrices
+                        dummy = []
+                        for cnt in range(len(x)):
+                            dummy.append(x[cnt] * y[cnt])
+                        return dummy
+
+                    for k in range(self.nr_row):
+                        for g in range(other.nr_col):
+                            final.append(sum(m(c[k], d[g])))
+                    return final
+
+                new.matrix = new.populate(2, mul(self.matrix, other.transpose()))
+                return new
+        else:
+            print("multiplying different variables")
+
+    def __rmul__(self, other):
+        if isinstance(other, float) or isinstance(other, int):
+            for i in range(self.nr_row):
+                for j in range(self.nr_col):
+                    self.matrix[i][j] *= other
+            return self
+        else:
+            print("multiplying different variables")
 
     def populate(self, d=1, lst1=None):
         # called in __init__() where it prompts the user for input
@@ -52,52 +160,31 @@ class MatrixShell:
         ans = transpose(c)
         return ans
 
-    def __mul__(self, other):
-        # scalar or matrix multiplication,
-        # usage: c = a * b where a and b are compatible matrices
-        if isinstance(other, float) or isinstance(other, int):
-            for i in range(self.nr_row):
-                for j in range(self.nr_col):
-                    self.matrix[i][j] *= other
-        elif isinstance(self, MatrixShell) and isinstance(other, MatrixShell):
-            if other.nr_row != self.nr_col:
-                print('Incompatible')
-                return
-
-            else:
-                # TODO: fix creation of a new matrix
-                new = MatrixShell()
-                new.nr_row = self.nr_row
-                new.nr_col = other.nr_col
-
-                def mul(c, d):
-                    # creates a list with ordered entries of a matrix
-                    # obtained from 2 other multiplied matrices
-                    # starting from left to right
-                    # a11,a12,a13...
-                    # a21,a22,a23...
-                    # ...
-                    final = []
-
-                    def m(x, y):
-                        # creates a list which if you sum its elements
-                        # you get elements of a matrix obtained from
-                        # multiplication of 2 other matrices
-                        dummy = []
-                        for cnt in range(len(x)):
-                            dummy.append(x[cnt] * y[cnt])
-                        return dummy
-
-                    for k in range(self.nr_row):
-                        for g in range(other.nr_col):
-                            final.append(sum(m(c[k], d[g])))
-                    return final
-
-                new.matrix = new.populate(2, mul(self.matrix, other.transpose()))
-                return new
-        else:
-            print("multiplying different variables")
-
     def det(self):
         import determinant
         return determinant.determinant(self.matrix)
+
+    def adjugate(self):
+        from determinant import determinant
+        from minor import minor, transpose
+        matrix = self.matrix
+        lst = []
+        for i in range(len(matrix)):
+            for j in range(len(matrix)):
+                lst.append((-1) ** (i + j) * determinant(minor(matrix, i, j)))
+
+        dummy = [[0 for i in range(len(matrix))] for j in range(len(matrix))]
+        for k in range(len(matrix)):
+            for g in range(len(matrix)):
+                dummy[k][g] = lst.pop(0)
+
+        r = MatrixShell(len(self.matrix), len(self.matrix), 1)
+        r.matrix = transpose(dummy)
+        return r
+
+    def inverse(self):
+        if self.det() != 0:
+            return self.adjugate() * (1 / self.det())
+        else:
+            print('Determinant = 0, no inverse')
+            return None
