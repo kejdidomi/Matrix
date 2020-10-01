@@ -107,7 +107,7 @@ class MatrixShell:
                             final.append(sum(m(c[k], d[g])))
                     return final
 
-                new.matrix = new.populate(2, mul(self.matrix, other.transpose()))
+                new.matrix = new.populate(2, mul(self.matrix, other.transpose().matrix))
                 return new
         else:
             print("multiplying different variables")
@@ -136,10 +136,11 @@ class MatrixShell:
 
     def transpose(self):
         # transposes the matrix
-        dummy = [[0 for i in range(self.nr_row)] for j in range(self.nr_col)]
+        dummy = MatrixShell(len(self.matrix), len(self.matrix), 1)
+        dummy.matrix = [[0 for i in range(self.nr_row)] for j in range(self.nr_col)]
         for i in range(len(self.matrix[0])):  # nr_col
             for j in range(len(self.matrix)):  # nr_row
-                dummy[i][j] = self.matrix[j][i]
+                dummy.matrix[i][j] = self.matrix[j][i]
         return dummy
 
     @staticmethod
@@ -188,3 +189,29 @@ class MatrixShell:
         else:
             print('Determinant = 0, no inverse')
             return None
+
+    @staticmethod
+    def random_i(r, c, range_start=-10, range_end=10):
+        import random
+        s = range_start
+        e = range_end
+        dummy = MatrixShell(r, c, 1)
+        dummy.matrix = [[random.randint(s, e) for i in range(c)] for j in range(r)]
+        return dummy
+
+    def cramers(self, vector):
+        try:
+            ans = []
+            matrix_transposed = self.transpose().matrix
+            d = self.transpose().det()
+            for i in range(len(vector)):
+                removed = matrix_transposed.pop(i)
+                matrix_transposed.insert(i, vector)
+                from determinant import determinant
+                ans.append(determinant(matrix_transposed) / d)
+                matrix_transposed.pop(i)
+                matrix_transposed.insert(i, removed)
+
+            return ans
+        except ZeroDivisionError:
+            return 'No solution (determinant = 0)'
