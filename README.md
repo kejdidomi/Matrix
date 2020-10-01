@@ -11,3 +11,5 @@ and help me understand how GitHub works, while I continue to perfect my skills i
 Added cramers and random_i to MatrixShell: the first function solves linear systems of equations 
 given the MatrixShell A and the vector [x1, x2, x3,...], the second function creates randomized 
 squared MatrixShells with integer elements from a given range.
+Added 2 new files that analyse certain aspects like determinant frequency and solving time using 
+cramers and the inverse of a MatrixShell
