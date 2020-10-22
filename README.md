@@ -13,3 +13,9 @@ given the MatrixShell A and the vector [x1, x2, x3,...], the second function cre
 squared MatrixShells with integer elements from a given range.
 Added 2 new files that analyse certain aspects like determinant frequency and solving time using 
 cramers and the inverse of a MatrixShell
+
+22-Oct-20 Update
+I will call this matrix project officially closed, if anyone would be interested to continue it 
+here are some ideas as of what to do next:
+1. define a new function that does a gauss-jordan elemination and returns a MatrixShell object
+2. convert all of the code or parts of it (determinant) into julia language code so it is faster
