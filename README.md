@@ -22,6 +22,7 @@ and help me understand how GitHub works, while I continue to perfect my skills i
     3. x = MatrixShell(2, 4, 1)
         - this is used in case of multiplication and is useful if you have a predefined python list in form of a matrix like: m = [[1,2],[1, 2]]
         - then you can say x.matrix = m and use all MatrixShell functions on this list (like finding the determinant)
+ 4. Have fun!!!
     
 
 ## 01-Oct-20 Update
