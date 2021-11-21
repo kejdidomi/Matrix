@@ -19,7 +19,8 @@ class MatrixShell:
     def __add__(self, other):
         if self.nr_row == other.nr_row and self.nr_col == other.nr_col:
             dummy = MatrixShell(len(self.matrix), len(self.matrix[0]), 1)
-            dummy.matrix = [[0 for i in range(len(self.matrix[0]))] for j in range(len(self.matrix))]
+            dummy.matrix = [[0 for i in range(len(self.matrix[0]))]
+                            for j in range(len(self.matrix))]
             for i in range(len(self.matrix)):
                 for j in range(len(self.matrix[0])):
                     dummy.matrix[i][j] = self.matrix[i][j] + other.matrix[i][j]
@@ -32,7 +33,8 @@ class MatrixShell:
     def __radd__(self, other):
         if self.nr_row == other.nr_row and self.nr_col == other.nr_col:
             dummy = MatrixShell(len(self.matrix), len(self.matrix[0]), 1)
-            dummy.matrix = [[0 for i in range(len(self.matrix[0]))] for j in range(len(self.matrix))]
+            dummy.matrix = [[0 for i in range(len(self.matrix[0]))]
+                            for j in range(len(self.matrix))]
             for i in range(len(self.matrix)):
                 for j in range(len(self.matrix[0])):
                     dummy.matrix[i][j] = self.matrix[i][j] + other.matrix[i][j]
@@ -45,7 +47,8 @@ class MatrixShell:
     def __sub__(self, other):
         if self.nr_row == other.nr_row and self.nr_col == other.nr_col:
             dummy = MatrixShell(len(self.matrix), len(self.matrix[0]), 1)
-            dummy.matrix = [[0 for i in range(len(self.matrix[0]))] for j in range(len(self.matrix))]
+            dummy.matrix = [[0 for i in range(len(self.matrix[0]))]
+                            for j in range(len(self.matrix))]
             for i in range(len(self.matrix)):
                 for j in range(len(self.matrix[0])):
                     dummy.matrix[i][j] = self.matrix[i][j] - other.matrix[i][j]
@@ -58,7 +61,8 @@ class MatrixShell:
     def __rsub__(self, other):
         if self.nr_row == other.nr_row and self.nr_col == other.nr_col:
             dummy = MatrixShell(len(self.matrix), len(self.matrix[0]), 1)
-            dummy.matrix = [[0 for i in range(len(self.matrix[0]))] for j in range(len(self.matrix))]
+            dummy.matrix = [[0 for i in range(len(self.matrix[0]))]
+                            for j in range(len(self.matrix))]
             for i in range(len(self.matrix)):
                 for j in range(len(self.matrix[0])):
                     dummy.matrix[i][j] = other.matrix[i][j] - self.matrix[i][j]
@@ -163,16 +167,16 @@ class MatrixShell:
 
     def det(self):
         import determinant
-        return determinant.determinant(self.matrix)
+        return determinant.matrix_determinant(self.matrix)
 
     def adjugate(self):
-        from determinant import determinant
+        from determinant import matrix_determinant
         from minor import minor, transpose
         matrix = self.matrix
         lst = []
         for i in range(len(matrix)):
             for j in range(len(matrix)):
-                lst.append((-1) ** (i + j) * determinant(minor(matrix, i, j)))
+                lst.append((-1) ** (i + j) * matrix_determinant(minor(matrix, i, j)))
 
         dummy = [[0 for i in range(len(matrix))] for j in range(len(matrix))]
         for k in range(len(matrix)):
@@ -207,8 +211,8 @@ class MatrixShell:
             for i in range(len(vector)):
                 removed = matrix_transposed.pop(i)
                 matrix_transposed.insert(i, vector)
-                from determinant import determinant
-                ans.append(determinant(matrix_transposed) / d)
+                from determinant import matrix_determinant
+                ans.append(matrix_determinant(matrix_transposed) / d)
                 matrix_transposed.pop(i)
                 matrix_transposed.insert(i, removed)
 
